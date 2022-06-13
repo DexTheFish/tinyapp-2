@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Random test files
+/testing-ground.js
+/notes.md
