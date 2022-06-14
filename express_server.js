@@ -46,6 +46,9 @@ app.get("/urls.json", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
+  // What would happen if a client requests a non-existent shortURL?
+  // What happens to the urlDatabase when the server is restarted?
+  // What type of status code do our redirects have? What does this status code mean?
 });
 
 app.get("/urls/new", (req, res) => {
