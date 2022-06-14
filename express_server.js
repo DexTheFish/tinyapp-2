@@ -6,14 +6,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-const generateRandomString = function() {
+const generateRandomString = function(length) {
   const lowerAlphabet = 'abcdefghijklmnopqrstuvwxyz';
   const upperAlphabet = lowerAlphabet.toUpperCase();
   const alphaNumericChars = lowerAlphabet + upperAlphabet + '0123456789';
   let randomString = '';
-  for (let i = 0; i < shortURLLength; i++) {
+  for (let i = 0; i < length; i++) {
     let randomIndex = Math.floor(Math.random() * 62);
-    randomString += alphaNumericChars[randomIndex]; 
+    randomString += alphaNumericChars[randomIndex];
   }
   return randomString;
 };
@@ -34,8 +34,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  const shortURL = generateRandomString(6); // make a random 6-character string
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);         // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/urls.json", (req, res) => {
