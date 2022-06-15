@@ -17,6 +17,7 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope = "col">Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -24,14 +25,15 @@
           <tr>
             <td><%= url %></td>
             <td><%= urls[url] %></td>
+            <td>
+              <form method="POST" action="/urls/<%= url %>/delete">
+                <button class="btn btn-danger">delete</button>
+              </form>
+            </td>
           </tr>
         <% } %>
       </tbody>
     </table>
-    <h3>Add New URL</h3>
-    <div>
-      <a href="/urls/new">make new url</a>
-    </div>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

@@ -45,10 +45,15 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
+  console.log(res.statusCode);
   res.redirect(longURL);
+
   // What would happen if a client requests a non-existent shortURL?
+  //  -> then longURL is undefined, so we redirect to /u/undefined, which redirects to /u/undefined...
   // What happens to the urlDatabase when the server is restarted?
+  //  -> it gets wiped to the default.   
   // What type of status code do our redirects have? What does this status code mean?
+  // look up the MDN documentation for 300 status codes.
 });
 
 app.get("/urls/new", (req, res) => {
