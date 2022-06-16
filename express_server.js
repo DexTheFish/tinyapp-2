@@ -9,6 +9,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
 
+// what happens if you try to register without an email or a password?
+// what happens if you try to register a user with an email that already exists?
+
+
 const generateRandomString = function(length) {
   const lowerAlphabet = 'abcdefghijklmnopqrstuvwxyz';
   const upperAlphabet = lowerAlphabet.toUpperCase();
