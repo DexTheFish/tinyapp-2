@@ -79,7 +79,7 @@ app.post("/login", (req, res) => {
     res.cookie("user_id", user.id);
     return res.redirect("/urls");
   }
-  res.status(400).send("Invalid login credentials");
+  res.status(403).send("Invalid login credentials");
 });
 
 app.get("/register", (req, res) => {
@@ -113,7 +113,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
