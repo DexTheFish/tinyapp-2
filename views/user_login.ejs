@@ -7,7 +7,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <title>User Registration - TinyApp</title>
+    <title>User Login - TinyApp</title>
   </head>
 
   <body>
@@ -15,8 +15,8 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Create Account</h3>
-      <form class="form-group" action="/register" method="POST">
+      <h3>Sign in</h3>
+      <form class="form-group" action="/login" method="POST">
         <div class="form-group mb-3">
           <label for="email">Email address</label>
           <input class="form-control" type="text" name="email" placeholder="enter email" style="width: 300px">
@@ -24,9 +24,8 @@
         <div class="form-group mb-3">
           <label for="password">Password</label>
           <input class="form-control" type="password" name="password" placeholder="password" style="width: 300px">
-          <small id="passwordHelp" class="form-text text-muted">never use the same password for multiple services.</small>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Sign in</button>
       </form>
     </main>
       <!-- Bootstrap JS -->

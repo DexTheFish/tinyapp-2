@@ -82,6 +82,11 @@ app.get("/register", (req, res) => {
   res.render("user_registration", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  const templateVars = { user: users[req.cookies.user_id] };
+  res.render("user_login", templateVars);
+});
+
 app.post("/register", (req, res) => {
   const id = generateRandomString(userIDLength);
   const email = req.body.email;
@@ -90,7 +95,6 @@ app.post("/register", (req, res) => {
     return res.status(400).send('Email and password must have a valid format!');
   }
   if (!isNewEmail(email, users)) {
-    //res.send(<html>That email has already been registered!</html>);
     return res.status(400).send('That email has already been registered!');
   }
   const newUser = {
