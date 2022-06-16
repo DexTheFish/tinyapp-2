@@ -25,6 +25,18 @@ const generateRandomString = function(length) {
   return randomString;
 };
 
+const getUserByEmail = function(email, userDatabase) {
+  for (const userID in userDatabase) {
+    if (userDatabase[userID].email.toUpperCase() === email.toUpperCase()) {
+      return userDatabase[userID];
+    }
+  }
+  return null;
+};
+
+const isNewEmail = function(email, userDatabase) {
+  return !Boolean(getUserByEmail(email, userDatabase));
+};
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -74,6 +86,13 @@ app.post("/register", (req, res) => {
   const id = generateRandomString(userIDLength);
   const email = req.body.email;
   const password = req.body.password;
+  if (!email.includes('@') || password === '') {
+    return res.status(400).send('Email and password must have a valid format!');
+  }
+  if (!isNewEmail(email, users)) {
+    //res.send(<html>That email has already been registered!</html>);
+    return res.status(400).send('That email has already been registered!');
+  }
   const newUser = {
     id,
     email,
