@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const shortURLLength = 6;
+const userIDLength = 8;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -44,14 +45,14 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies.username };
+  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
   res.render("urls_index", templateVars);
 });
 
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString(6); // make a random 6-character string
+  const shortURL = generateRandomString(shortURLLength);
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);         // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.post("/login", (req, res) => {
@@ -61,21 +62,20 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const templateVars = { username: req.cookies.username };
+  const templateVars = { user: users[req.cookies.user_id] };
   res.render("user_registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
-  const id = generateRandomString(8);
-  const username = req.body.email;
+  const id = generateRandomString(userIDLength);
+  const email = req.body.email;
   const password = req.body.password;
   const newUser = {
     id,
-    username,
+    email,
     password
   };
   users[id] = newUser;
-  console.log(users);
   res.cookie("user_id", id);
   res.redirect("/urls");
 });
@@ -109,12 +109,12 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { username: req.cookies.username };
+  const templateVars = { user: users[req.cookies.user_id] };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies.username };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies.user_id] };
   res.render("urls_show", templateVars);
 });
 
