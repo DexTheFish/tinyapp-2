@@ -26,6 +26,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
 app.get("/", (req, res) => {
   res.redirect("/urls");
 });
@@ -45,17 +58,32 @@ app.post("/login", (req, res) => {
   const username = req.body.username;
   res.cookie("username", username);
   res.redirect("/urls");
-})
+});
 
 app.get("/register", (req, res) => {
   const templateVars = { username: req.cookies.username };
   res.render("user_registration", templateVars);
-})
+});
+
+app.post("/register", (req, res) => {
+  const id = generateRandomString(8);
+  const username = req.body.email;
+  const password = req.body.password;
+  const newUser = {
+    id,
+    username,
+    password
+  };
+  users[id] = newUser;
+  console.log(users);
+  res.cookie("user_id", id);
+  res.redirect("/urls");
+});
 
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
-})
+});
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -65,7 +93,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL];
   res.redirect("/urls");
-})
+});
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
@@ -75,7 +103,7 @@ app.get("/u/:shortURL", (req, res) => {
   // What would happen if a client requests a non-existent shortURL?
   //  -> then longURL is undefined, so we redirect to /u/undefined, which redirects to /u/undefined...
   // What happens to the urlDatabase when the server is restarted?
-  //  -> it gets wiped to the default.   
+  //  -> it gets wiped to the default.
   // What type of status code do our redirects have? What does this status code mean?
   // look up the MDN documentation for 300 status codes.
 });
@@ -96,7 +124,7 @@ app.post("/urls/:id", (req, res) => {
   const id = req.params.id;
   urlDatabase[id] = req.body.longURL;
   res.redirect(`/urls/${id}`);
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
