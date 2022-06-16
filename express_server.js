@@ -72,9 +72,14 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const username = req.body.username;
-  res.cookie("username", username);
-  res.redirect("/urls");
+  const email = req.body.email;
+  const password = req.body.password;
+  const user = getUserByEmail(email, users);
+  if (user && user.email.toUpperCase() === email.toUpperCase() && user.password === password) {
+    res.cookie("user_id", user.id);
+    return res.redirect("/urls");
+  }
+  res.status(400).send("Invalid login credentials");
 });
 
 app.get("/register", (req, res) => {
