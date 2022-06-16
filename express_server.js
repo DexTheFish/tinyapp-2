@@ -62,10 +62,16 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
+  if (!templateVars.user) {
+    return res.redirect("/login");
+  }
   res.render("urls_index", templateVars);
 });
 
 app.post("/urls", (req, res) => {
+  if (!users[req.cookies.user_id]) {
+    return res.status(403).send("You must be logged in to add a URL.\n");
+  }
   const shortURL = generateRandomString(shortURLLength);
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
@@ -148,6 +154,9 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
+  if (!templateVars.user) {
+    return res.redirect("/login");
+  }
   res.render("urls_new", templateVars);
 });
 
