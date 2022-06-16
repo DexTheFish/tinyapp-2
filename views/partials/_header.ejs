@@ -11,10 +11,10 @@
       </div>
     </div>
     <% if (!user) { %>
-    <form method="POST" action="/login">
-      <input type="text" name="username" placeholder="dex@example.com">
-      <button class="btn btn-primary btn-sm" type="submit">Sign In</button>
-    </form>
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="/login">Sign in</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
+      </div>
     <% } else { %>
       <span>Logged in as:  <%= user.email %> &nbsp &nbsp</span>
       <form method="POST" action="/logout">
