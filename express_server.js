@@ -10,7 +10,7 @@ const cookieSession = require('cookie-session');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser()); //// no longer in use
 app.set("view engine", "ejs");
-require('dotenv').config();
+require('dotenv').config(); //////
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_KEY_1, process.env.SESSION_KEY_2],
