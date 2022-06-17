@@ -16,7 +16,6 @@ const getUserByEmail = function(email, userDatabase) {
       return userDatabase[userID];
     }
   }
-  return null;
 };
 
 const isNewEmail = function(email, userDatabase) {

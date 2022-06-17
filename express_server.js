@@ -18,41 +18,6 @@ app.use(cookieSession({
 
 const { generateRandomString, getUserByEmail, isNewEmail, urlsForUser } = require("./helpers");
 
-// const generateRandomString = function(length) {
-//   const lowerAlphabet = 'abcdefghijklmnopqrstuvwxyz';
-//   const upperAlphabet = lowerAlphabet.toUpperCase();
-//   const alphaNumericChars = lowerAlphabet + upperAlphabet + '0123456789';
-//   let randomString = '';
-//   for (let i = 0; i < length; i++) {
-//     let randomIndex = Math.floor(Math.random() * 62);
-//     randomString += alphaNumericChars[randomIndex];
-//   }
-//   return randomString;
-// };
-
-// const getUserByEmail = function(email, userDatabase) {
-//   for (const userID in userDatabase) {
-//     if (userDatabase[userID].email.toUpperCase() === email.toUpperCase()) {
-//       return userDatabase[userID];
-//     }
-//   }
-//   return null;
-// };
-
-// const isNewEmail = function(email, userDatabase) {
-//   return !Boolean(getUserByEmail(email, userDatabase));
-// };
-
-// const urlsForUser = function(userID, urlDatabase) {
-//   const userURLs = {};
-//   for (let shortURL in urlDatabase) {
-//     if (urlDatabase[shortURL].userID === userID) {
-//       userURLs[shortURL] = urlDatabase[shortURL];
-//     }
-//   }
-//   return userURLs;
-// };
-
 const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
@@ -192,7 +157,13 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  const user = users[req.session.user_id]
+  const templateVars = { shortURL, longURL, user };
+  if (!user || !urlDatabase[shortURL] || user.id !== urlDatabase[shortURL].userID) {
+    return res.status(403).send("That URL is not yours to change!\n");
+  }
   res.render("urls_show", templateVars);
 });
 
