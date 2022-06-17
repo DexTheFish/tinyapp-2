@@ -5,8 +5,11 @@ This version was constructed by Dex Davis as part of the Lighthouse Labs web dev
 
 ## Final Product
 
-!["Homepage"](#)
-!["Edit page"](#)
+!["Create URL"](https://github.com/DexTheFish/tinyapp-2/blob/main/docs/create-url.png?raw=true)
+!["Edit page"](https://github.com/DexTheFish/tinyapp-2/blob/main/docs/edit-url.png?raw=true)
+!["My Urls"](https://github.com/DexTheFish/tinyapp-2/blob/main/docs/my-urls.png?raw=true)
+!["Register"](https://github.com/DexTheFish/tinyapp-2/blob/main/docs/register.png?raw=true)
+!["Sign in"](https://github.com/DexTheFish/tinyapp-2/blob/main/docs/sign-in.png?raw=true)
 
 ## Dependencies
 
@@ -16,6 +19,7 @@ This version was constructed by Dex Davis as part of the Lighthouse Labs web dev
 - bcrypt
 - body-parser
 - cookie-session
+- dotenv
 
 
 ## Getting Started
