@@ -15,7 +15,7 @@ app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_KEY_1, process.env.SESSION_KEY_2],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 
 const { generateRandomString, getUserByEmail, isNewEmail, urlsForUser } = require("./helpers");
 
@@ -86,7 +86,7 @@ app.post("/login", (req, res) => {
 app.get("/register", (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
   if (templateVars.user) {
-    return res.redirect("/urls")
+    return res.redirect("/urls");
   }
   res.render("user_registration", templateVars);
 });
@@ -136,7 +136,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   if (!user || !urlDatabase[shortURL] || userID !== urlDatabase[shortURL].userID) {
     return res.status(403).send("That URL is not yours to delete!\n");
   }
-  delete urlDatabase[shortURL]
+  delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
 
@@ -159,7 +159,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const user = users[req.session.user_id]
+  const user = users[req.session.user_id];
   if (!user || !urlDatabase[shortURL] || user.id !== urlDatabase[shortURL].userID) {
     return res.status(403).send("That URL is not yours to change!\n");
   }
