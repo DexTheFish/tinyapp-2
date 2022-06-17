@@ -4,11 +4,11 @@ const PORT = 8080; // default port 8080
 const shortURLLength = 6;
 const userIDLength = 8;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); ////// no longer in use
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieParser()); //// no longer in use
 app.set("view engine", "ejs");
 app.use(cookieSession({
   name: 'session',
