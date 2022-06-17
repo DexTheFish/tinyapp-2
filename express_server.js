@@ -4,16 +4,18 @@ const PORT = 8080; // default port 8080
 const shortURLLength = 6;
 const userIDLength = 8;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser'); ////// no longer in use
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser()); //// no longer in use
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.set("view engine", "ejs");
-require('dotenv').config(); //////
+require('dotenv').config();
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_KEY_1, process.env.SESSION_KEY_2],
+  // keys should be defined in .env, but for testing purposes the following can be uncommented:
+  //keys: ["do not store keys as plaintext", "or you are asking for trouble"],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
