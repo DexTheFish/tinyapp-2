@@ -38,9 +38,25 @@ const isNewEmail = function(email, userDatabase) {
   return !Boolean(getUserByEmail(email, userDatabase));
 };
 
+const urlsForUser = function(userID, urlDatabase) {
+  const userURLs = {};
+  for (let shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === userID) {
+      userURLs[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return userURLs;
+};
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    userID: "user2RandomID"
+  }
 };
 
 const users = {
@@ -61,19 +77,28 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
-  if (!templateVars.user) {
+  const userID = req.cookies.user_id;
+  const user = users[userID];
+  if (!user) {
     return res.redirect("/login");
   }
+  const urls = urlsForUser(userID, urlDatabase);
+  const templateVars = { urls, user };
   res.render("urls_index", templateVars);
 });
 
 app.post("/urls", (req, res) => {
-  if (!users[req.cookies.user_id]) {
+  // add a url
+  const userID = req.cookies.user_id;
+  const user = users[userID];
+  if (!user) {
     return res.status(403).send("You must be logged in to add a URL.\n");
   }
   const shortURL = generateRandomString(shortURLLength);
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID
+  };
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -134,22 +159,23 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  const userID = req.cookies.user_id;
+  const user = users[userID];
   const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
+  if (!user || !urlDatabase[shortURL] || userID !== urlDatabase[shortURL].userID) {
+    return res.status(403).send("That URL is not yours to delete!\n");
+  }
+  delete urlDatabase[shortURL]
   res.redirect("/urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  console.log(res.statusCode);
-  res.redirect(longURL);
-
-  // What would happen if a client requests a non-existent shortURL?
-  //  -> then longURL is undefined, so we redirect to /u/undefined, which redirects to /u/undefined...
-  // What happens to the urlDatabase when the server is restarted?
-  //  -> it gets wiped to the default.
-  // What type of status code do our redirects have? What does this status code mean?
-  // look up the MDN documentation for 300 status codes.
+  // redirect to longURL. Does not require permission or login.
+  if (!urlDatabase[req.params.shortURL]) {
+    return res.status(404).send("Page not found");
+  }
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  return res.redirect(longURL);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -161,14 +187,21 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies.user_id] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies.user_id] };
   res.render("urls_show", templateVars);
 });
 
 app.post("/urls/:id", (req, res) => {
-  const id = req.params.id;
-  urlDatabase[id] = req.body.longURL;
-  res.redirect(`/urls/${id}`);
+  // update a url
+  const userID = req.cookies.user_id;
+  const user = users[userID];
+  const shortURL = req.params.id;
+  // display a message if the user is not logged in, or if the URL does not belong to them
+  if (!user || !urlDatabase[shortURL] || userID !== urlDatabase[shortURL].userID) {
+    return res.status(403).send("That URL is not yours to change!\n");
+  }
+  urlDatabase[shortURL].longURL = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.listen(PORT, () => {
