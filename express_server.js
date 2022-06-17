@@ -5,13 +5,10 @@ const shortURLLength = 6;
 const userIDLength = 8;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
-
-// what happens if you try to register without an email or a password?
-// what happens if you try to register a user with an email that already exists?
-
 
 const generateRandomString = function(length) {
   const lowerAlphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -104,9 +101,8 @@ app.post("/urls", (req, res) => {
 
 app.post("/login", (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
   const user = getUserByEmail(email, users);
-  if (user && user.email.toUpperCase() === email.toUpperCase() && user.password === password) {
+  if (user && user.email.toUpperCase() === email.toUpperCase() && bcrypt.compareSync(req.body.password, user.password)) {
     res.cookie("user_id", user.id);
     return res.redirect("/urls");
   }
@@ -132,13 +128,14 @@ app.get("/login", (req, res) => {
 app.post("/register", (req, res) => {
   const id = generateRandomString(userIDLength);
   const email = req.body.email;
-  const password = req.body.password;
+  let password = req.body.password;
   if (!email.includes('@') || password === '') {
     return res.status(400).send('Email and password must have a valid format!');
   }
   if (!isNewEmail(email, users)) {
     return res.status(400).send('That email has already been registered!');
   }
+  password = bcrypt.hashSync(password, 10);
   const newUser = {
     id,
     email,
