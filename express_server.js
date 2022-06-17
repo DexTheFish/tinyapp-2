@@ -10,9 +10,10 @@ const cookieSession = require('cookie-session');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser()); //// no longer in use
 app.set("view engine", "ejs");
+require('dotenv').config();
 app.use(cookieSession({
   name: 'session',
-  keys: ["The only time that I worry about", "is having a good one"],
+  keys: [process.env.SESSION_KEY_1, process.env.SESSION_KEY_2],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
@@ -33,12 +34,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: process.env.PASSWORD_1
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: process.env.PASSWORD_2
   }
 };
 
