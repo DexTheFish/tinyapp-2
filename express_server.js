@@ -158,12 +158,12 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[req.params.shortURL].longURL;
   const user = users[req.session.user_id]
-  const templateVars = { shortURL, longURL, user };
   if (!user || !urlDatabase[shortURL] || user.id !== urlDatabase[shortURL].userID) {
     return res.status(403).send("That URL is not yours to change!\n");
   }
+  const longURL = urlDatabase[shortURL].longURL;
+  const templateVars = { shortURL, longURL, user };
   res.render("urls_show", templateVars);
 });
 
@@ -177,7 +177,7 @@ app.post("/urls/:id", (req, res) => {
     return res.status(403).send("That URL is not yours to change!\n");
   }
   urlDatabase[shortURL].longURL = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls`);
 });
 
 app.listen(PORT, () => {
